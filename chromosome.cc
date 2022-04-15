@@ -30,6 +30,15 @@ Chromosome::~Chromosome()
 void
 Chromosome::mutate()
 {
+  if (order_.size() > 1){
+    int ind1 = generator_() % (order_.size()); // random number 0 to size -1
+    int ind2 = generator_() % (order_.size());
+    while (ind1==ind2){
+      ind2 = generator_() % (order_.size());
+    }
+    std::swap(order_[ind1], order_[ind2]);
+  }
+
   // Add your implementation here
 
   assert(is_valid());
