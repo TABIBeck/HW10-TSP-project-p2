@@ -101,7 +101,7 @@ Chromosome::create_crossover_child(const Chromosome* p1, const Chromosome* p2,
 double
 Chromosome::get_fitness() const
 {
-  double distance = cities_ptr->total_path_distance(order_);    // The distance of the current
+  double distance = cities_ptr_->total_path_distance(order_);    // The distance of the current
     // ordering
   return 100.0 / distance;
 }
