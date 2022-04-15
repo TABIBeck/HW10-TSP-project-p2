@@ -109,7 +109,17 @@ Chromosome::get_fitness() const
 bool
 Chromosome::is_valid() const
 {
-  // Add your implementation here
+  auto sorted = order_;
+  std::sort(sorted.begin(), sorted.end());
+  auto has_repeat = std::adjacent_find(sorted.begin(), sorted.end());
+  if (has_repeat != sorted.end()){
+    return false;
+  }
+  auto greatest = sorted[sorted.size()-1]; // last, and greatest, element
+  if (greatest >= order_.size()){
+    return false;
+  }
+  return true;
 }
 
 // Find whether a certain value appears in a given range of the chromosome.
@@ -123,5 +133,4 @@ Chromosome::is_in_range(unsigned value, unsigned begin, unsigned end) const
     return false;
   }
   return true;
-  // Add your implementation here
 }
