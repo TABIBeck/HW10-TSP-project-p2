@@ -51,7 +51,17 @@ Chromosome::recombine(const Chromosome* other)
   assert(is_valid());
   assert(other->is_valid());
 
-  // Add your implementation here
+  unsigned index1;  // Define the variables that hold the range so that they
+    // remain outside the while loop
+  unsigned index2;
+  do {
+      index1 = generator_() % (order_.size()); // generates the range
+      index2 = generator_() % (order_.size());
+  } while ((index1 == index2) && (order_.size() > 1));
+  const Chromosome* thisPtr = this;
+  Chromosome* child1 = create_crossover_child(thisPtr, other, index1, index2);
+  Chromosome* child2 = create_crossover_child(thisPtr, other, index1, index2);
+  return std::make_pair(child1, child2);
 }
 
 //////////////////////////////////////////////////////////////////////////////
