@@ -39,8 +39,6 @@ Chromosome::mutate()
     std::swap(order_[ind1], order_[ind2]);
   }
 
-  // Add your implementation here
-
   assert(is_valid());
 }
 
@@ -110,5 +108,10 @@ Chromosome::is_valid() const
 bool
 Chromosome::is_in_range(unsigned value, unsigned begin, unsigned end) const
 {
+  auto loc_found = std::find(&order_[begin], &order_[end], value);
+  if (loc_found == &order_[end]){
+    return false;
+  }
+  return true;
   // Add your implementation here
 }
