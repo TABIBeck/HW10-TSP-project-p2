@@ -36,8 +36,15 @@ class Deme {
   // return a pointer to that chromosome.
   virtual Chromosome* select_parent();
 
+  // Calculate the roulette selection score of a given chromosome in the population
+  virtual double roulette_score(Chromosome* c);
+
+  // Take the total fitness of the population, for roulette
+  virtual double sum_fitness();
+
   std::vector<Chromosome*> pop_;  // Population of Chromosomes
   double mut_rate_;  // Mutation rate (fraction in range [0,1])
 
   std::default_random_engine generator_; // A random number generator for the various methods
+  double pop_fit_; // sum of population fitness scores
 };
