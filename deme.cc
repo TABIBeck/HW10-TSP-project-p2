@@ -13,20 +13,25 @@ Deme::Deme(const Cities* cities_ptr, unsigned pop_size, double mut_rate)
   std::vector<Chromosome*> pop_;
   uint i = 0;
   while (i < pop_size){
-    Chromosome c = Chromosome(cities_ptr); // randomly ordered by constructor
-    pop_.push_back(&c);
+    Chromosome* c = new Chromosome(cities_ptr); // randomly ordered by constructor
+    pop_.push_back(c);
     i++;
   }
 
-  double mut_rate_ = mut_rate;
+  mut_rate_ = mut_rate;
+  std::random_device rd;    // NOT USED YET FOR TESTING BUT SHOULD BE USED LINE BELOW
+  generator_.seed(321);
   std::default_random_engine generator_;
-  double pop_fit_ = sum_fitness();
+
+  pop_fit_ = sum_fitness();
 }
 
 // Clean up as necessary
 Deme::~Deme()
 {
-  // Add your implementation here
+  for (auto c : pop_) {  // Deletes all the chromosomes being held on the stack
+      delete c;
+  }
 }
 
 // Calculate the roulette selection score of a given chromosome in the population
@@ -65,22 +70,23 @@ void Deme::compute_next_generation()
       parent2 = select_parent();
     }
 
-    const double mut_chance1 = // make a random number [0,1]
+    static std::uniform_real_distribution<double> dis(0.0, 1.0);
+    const double mut_chance1 = dis(generator_); // make a random number [0,1]
     if (mut_chance1 >= mut_rate_){
       parent1->mutate();
     }
-    const double mut_chance2 = // make a random number [0,1]
+    const double mut_chance2 = dis(generator_); // make a random number [0,1]
     if (mut_chance2 >= mut_rate_){
-      parent2-> mutate()
+      parent2-> mutate();
     }
     auto offspring = parent1->recombine(parent2);
     new_pop.push_back(offspring.first);
     new_pop.push_back(offspring.second);
 
-    i++
+    i++;
   }
   pop_ = new_pop; // ignore parent generation, use only child generation
-  pop_fit_ = sum_fitness() // find new total fitness score
+  pop_fit_ = sum_fitness(); // find new total fitness score
 }
 
 // Return a copy of the chromosome with the highest fitness.
@@ -99,10 +105,20 @@ const Chromosome* Deme::get_best() const
 // return a pointer to that chromosome.
 Chromosome* Deme::select_parent()
 {
-  const double prob = // make a random number [0,100], new prob for each pair
-  int i = // random number 0 to pop_.size()-1
-  while (roulette_score(pop_[i]) < prob){
-    int i = // random number 0 to pop_.size()-1
-  }
+  static std::uniform_real_distribution<double> dis(0.0, 1.0);
+  double prob = dis(generator_); // make a random number 0 to 1. All of the
+    // roulette_scores of the elements should add up to 1, so if we just count
+    // through them until we hit the one that this value falls in we'll have
+    // accurately chosen
+  int i = -1;   // Start at -1 instead of 0 because we're going to increment it
+    // immediately
+  do {
+      ++i;
+      assert((long unsigned int)(i) <= pop_.size()); // Makes sure we're not
+        // going out of range, because that would mean something is wrong here
+      prob -= roulette_score(pop_[i]);  // Subtract the current score from the prob.
+        // As this goes on, prob will drop to or below 0 when you hit the correct chromosome
+  } while (prob > 0);
+
   return pop_[i];
 }

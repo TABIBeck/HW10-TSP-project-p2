@@ -9,6 +9,7 @@
 #include "cities.hh"
 
 #include <random>
+#include <cassert>
 
 class Deme {
  public:
