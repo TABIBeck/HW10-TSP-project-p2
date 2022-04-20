@@ -10,7 +10,6 @@
 // Also receives a mutation rate in the range [0-1].
 Deme::Deme(const Cities* cities_ptr, unsigned pop_size, double mut_rate)
 {
-  std::vector<Chromosome*> pop_;
   uint i = 0;
   while (i < pop_size){
     Chromosome* c = new Chromosome(cities_ptr); // randomly ordered by constructor
