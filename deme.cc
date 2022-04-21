@@ -18,7 +18,7 @@ Deme::Deme(const Cities* cities_ptr, unsigned pop_size, double mut_rate)
   }
 
   mut_rate_ = mut_rate;
-  std::random_device rd;    // NOT USED YET FOR TESTING BUT SHOULD BE USED LINE BELOW
+  std::random_device rd;
   generator_.seed(321);
   std::default_random_engine generator_;
 
@@ -84,6 +84,9 @@ void Deme::compute_next_generation()
 
     i++;
   }
+  for (auto c : pop_) {   //Make sure the old population is properly deleted
+      delete c;
+  }
   pop_ = new_pop; // ignore parent generation, use only child generation
   pop_fit_ = sum_fitness(); // find new total fitness score
 }
@@ -91,6 +94,7 @@ void Deme::compute_next_generation()
 // Return a copy of the chromosome with the highest fitness.
 const Chromosome* Deme::get_best() const
 {
+  assert(pop_.size());  // Throws an error if there are no elements to look at
   Chromosome* best = pop_[0];
   for (auto c : pop_){
     if (c->get_fitness() > best->get_fitness()){
@@ -109,15 +113,20 @@ Chromosome* Deme::select_parent()
     // roulette_scores of the elements should add up to 1, so if we just count
     // through them until we hit the one that this value falls in we'll have
     // accurately chosen
+  assert((prob >= 0) && (prob <= 1));   // Makes sure it's actually within the correct
+    // range
   int i = -1;   // Start at -1 instead of 0 because we're going to increment it
     // immediately
   do {
       ++i;
-      assert((long unsigned int)(i) <= pop_.size()); // Makes sure we're not
+      assert((long unsigned int)(i) < pop_.size()); // Makes sure we're not
         // going out of range, because that would mean something is wrong here
       prob -= roulette_score(pop_[i]);  // Subtract the current score from the prob.
         // As this goes on, prob will drop to or below 0 when you hit the correct chromosome
-  } while (prob > 0);
+  } while ((prob > 0) && ((long unsigned int)(i + 1) < pop_.size()));  // That second clause
+    // is there because floating points can be a little inaccurate and we might be super
+    // close to 0, but not quite there, resulting in us looking for another element when
+    // there isn't one
 
   return pop_[i];
 }
