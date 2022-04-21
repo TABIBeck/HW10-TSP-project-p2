@@ -5,15 +5,19 @@
 #include <algorithm>
 #include <cassert>
 #include <random>
+#include <numeric>
 
 #include "chromosome.hh"
 
+
+static std::random_device rd;  // Static so we don't initialize every time
+static std::default_random_engine g(rd());
 //////////////////////////////////////////////////////////////////////////////
 // Generate a completely random permutation from a list of cities
 Chromosome::Chromosome(const Cities* cities_ptr)
   : cities_ptr_(cities_ptr),
     order_(random_permutation(cities_ptr->size())),
-    generator_(rand())
+    generator_(g())
 {
   assert(is_valid());
 }
@@ -57,7 +61,7 @@ Chromosome::recombine(const Chromosome* other)
   do {
       index1 = generator_() % (order_.size()); // generates the range
       index2 = generator_() % (order_.size());
-  } while ((index1 == index2) && (order_.size() > 1));
+  } while ((index1 >= index2) && (order_.size() > 1));
   const Chromosome* thisPtr = this;
   Chromosome* child1 = create_crossover_child(thisPtr, other, index1, index2);
   Chromosome* child2 = create_crossover_child(thisPtr, other, index1, index2);
@@ -84,7 +88,7 @@ Chromosome::create_crossover_child(const Chromosome* p1, const Chromosome* p2,
     }
     else { // Increment j as long as its value is in the [b,e) range of p1
       while (p1->is_in_range(p2->order_[j], b, e)) {
-        ++j;
+        j++;
         assert(j < p2->order_.size());
       }
       child->order_[i] = p2->order_[j];
