@@ -5,7 +5,7 @@ This project is a collaboration between Tiago Beck and Mollie Boor. We used Eita
 The project can be constructed using the included makefile. The makefile also includes a command for copying to patty.
 
 ### Deme
-- **constructor:** creates a vector of pop_size many randomly-permuted Chromsome objects. Sets mutrate_ and generator_. Takes the sum of the fitness scores of all chromosomes, used for roulette scoring.
+- **constructor:** creates a vector of pop_size many randomly-permuted Chromosome objects. Sets mutrate_ and generator_. Takes the sum of the fitness scores of all chromosomes, used for roulette scoring.
 - **destructor:** deletes each chromosome in the deme population.
 - **roulette_score, sum_fitness:** calculates the roulette probability linked to in the assignment description.
 - **compute_next_generation:** selects pop_.size()/2 pairs of parent chromosomes, possibly mutates them, then combines them and puts their offspring into a new population vector.
@@ -18,6 +18,6 @@ The project can be constructed using the included makefile. The makefile also in
 - **mutate:** selects two random indecies and swaps the values at them.
 - **recombine:** selects a beginning and end index and creates two crossover children using that range.
 - **create_crossover_child:** implemented by Eitan.
-- **get_fitness:** returns the inverse of the distance of the route. Will always be between 0 and 1 with higher being a shorter route.
+- **get_fitness:** returns the inverse of the distance of the route. Will always be between 0 and 100 with higher being a shorter route.
 - **is_valid:** sorts the vector and then uses std::adjacent_find to check for duplicate entries. Also checks if largest element is greater than the number of cities minus 1. If neither of those are true, there are also no skipped cities and the chromosome is valid.
 - **is_in_range:** calls std::find on a subrange of a vector to check for the given value.
