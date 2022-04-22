@@ -16,3 +16,6 @@ test_chromosome: test_chromosome.o chromosome.o cities.o
 
 clean:
 	rm -rf *.o tsp
+	
+copy:
+	scp * patty:ga

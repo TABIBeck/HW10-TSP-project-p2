@@ -19,7 +19,7 @@ Deme::Deme(const Cities* cities_ptr, unsigned pop_size, double mut_rate)
 
   mut_rate_ = mut_rate;
   std::random_device rd;
-  generator_.seed(321);
+  generator_.seed(rd());
   std::default_random_engine generator_;
 
   pop_fit_ = sum_fitness();
@@ -71,11 +71,11 @@ void Deme::compute_next_generation()
 
     static std::uniform_real_distribution<double> dis(0.0, 1.0);
     const double mut_chance1 = dis(generator_); // make a random number [0,1]
-    if (mut_chance1 >= mut_rate_){
+    if (mut_chance1 <= mut_rate_){
       parent1->mutate();
     }
     const double mut_chance2 = dis(generator_); // make a random number [0,1]
-    if (mut_chance2 >= mut_rate_){
+    if (mut_chance2 <= mut_rate_){
       parent2-> mutate();
     }
     auto offspring = parent1->recombine(parent2);
@@ -109,7 +109,7 @@ const Chromosome* Deme::get_best() const
 Chromosome* Deme::select_parent()
 {
   static std::uniform_real_distribution<double> dis(0.0, 1.0);
-  double prob = dis(generator_); // make a random number 0 to 1. All of the
+  double prob = dis(generator_);// make a random number 0 to 1. All of the
     // roulette_scores of the elements should add up to 1, so if we just count
     // through them until we hit the one that this value falls in we'll have
     // accurately chosen
@@ -127,6 +127,5 @@ Chromosome* Deme::select_parent()
     // is there because floating points can be a little inaccurate and we might be super
     // close to 0, but not quite there, resulting in us looking for another element when
     // there isn't one
-
   return pop_[i];
 }

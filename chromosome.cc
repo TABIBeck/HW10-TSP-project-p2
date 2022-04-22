@@ -58,13 +58,16 @@ Chromosome::recombine(const Chromosome* other)
   unsigned index1;  // Define the variables that hold the range so that they
     // remain outside the while loop
   unsigned index2;
-  do {
-      index1 = generator_() % (order_.size()); // generates the range
-      index2 = generator_() % (order_.size());
-  } while ((index1 >= index2) && (order_.size() > 1));
+  index1 = generator_() % (order_.size()); // generates the range
+  index2 = generator_() % (order_.size());
+  if (index1 >= index2){
+    auto temp = index1;
+    index1=index2;
+    index2=temp;
+  }
   const Chromosome* thisPtr = this;
   Chromosome* child1 = create_crossover_child(thisPtr, other, index1, index2);
-  Chromosome* child2 = create_crossover_child(thisPtr, other, index1, index2);
+  Chromosome* child2 = create_crossover_child(other, thisPtr, index1, index2);
   return std::make_pair(child1, child2);
 }
 
@@ -107,7 +110,7 @@ Chromosome::get_fitness() const
 {
   double distance = cities_ptr_->total_path_distance(order_);    // The distance of the current
     // ordering
-  return 100.0 / distance;
+  return 1.0 / distance;
 }
 
 // A chromsome is valid if it has no repeated values in its permutation,
