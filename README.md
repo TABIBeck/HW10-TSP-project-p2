@@ -1,6 +1,6 @@
 # HW10-TSP-project-p2
 
-This project is a collaboration between Tiago Beck and Mollie Boor. We used Eitan's implementation of the Cities class and his tsp.cc file.
+This project is a collaboration between Tiago Beck and Mollie Boor. We used Eitan's implementation of the Cities class and his tsp.cc file, with the addition of a randomized search function. To test our randomized search, we used our solution from the first part of the project.
 
 The project can be constructed using the included makefile. The makefile also includes a command for copying to patty.
 
